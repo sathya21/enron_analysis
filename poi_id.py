@@ -10,9 +10,8 @@ from tester import dump_classifier_and_data
 ### Task 1: Select what features you'll use.
 ### features_list is a list of strings, each of which is a feature name.
 ### The first feature must be "poi".
-features_list = ['poi','salary'] # You will need to use more features
-
-### Load the dictionary containing the dataset
+features_list = ['poi','salary','bonus', 'total_stock_value', 'long_term_incentive', 'exercised_stock_options','from_poi_to_this_person']
+### Load the dictionary containing the dataset'restricted_stock
 with open("final_project_dataset.pkl", "r") as data_file:
     data_dict = pickle.load(data_file)
 
@@ -22,9 +21,9 @@ with open("final_project_dataset.pkl", "r") as data_file:
 ### Task 2: Remove outliers
 data_dict.pop('TOTAL',0)
 
-print data_dict
 
 ### Task 3: Create new feature(s)
+
 
 
 ### Store to my_dataset for easy export below.
@@ -35,14 +34,7 @@ my_dataset = data_dict
 data = featureFormat(my_dataset, features_list, sort_keys = True)
 labels, features = targetFeatureSplit(data)
 
-import matplotlib.pyplot as plt
-for feature, target in zip(features, labels):
-    plt.scatter( feature, target, color='R' )
 
-
-plt.show()
-
-### labels for the legend
 
 
 print 'lables %s feature%s'%(labels[0],features[0])
@@ -54,9 +46,11 @@ print 'lables %s feature%s'%(labels[0],features[0])
 ### http://scikit-learn.org/stable/modules/pipeline.html
 
 # Provided to give you a starting point. Try a variety of classifiers.
-from sklearn.naive_bayes import GaussianNB
-clf = GaussianNB()
+#from sklearn.naive_bayes import GaussianNB
+#clf = GaussianNB()
 
+from sklearn import tree
+clf = tree.DecisionTreeClassifier(min_samples_split=2)
 ### Task 5: Tune your classifier to achieve better than .3 precision and recall
 ### using our testing script. Check the tester.py script in the final project
 ### folder for details on the evaluation method, especially the test_classifier
