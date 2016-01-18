@@ -12,7 +12,7 @@ def get_gaussian():
 def get_decision_tree():
     from sklearn import tree
     from sklearn import grid_search
-    param_grid = {'min_samples_split': [2,3,4,5,6],'max_features':[5,6]}
+    param_grid = {'min_samples_split': [2,3,4,5,6],'max_features':[3,4]}
 
     clf = grid_search.GridSearchCV(tree.DecisionTreeClassifier(), param_grid)
     return clf
@@ -47,7 +47,7 @@ from tester import dump_classifier_and_data
 ### features_list is a list of strings, each of which is a feature name.
 ### The first feature must be "poi".
 features = ['poi','salary','bonus', 'total_stock_value', 'total_payments','long_term_incentive','deferred_income', 'exercised_stock_options','from_poi_to_this_person','from_this_person_to_poi','to_messages','from_messages','shared_receipt_with_poi']
-features_list = ['poi','salary','bonus','total_stock_value', 'long_term_incentive']
+features_list = ['poi','total_payments','total_stock_value']
 ### Load the dictionary containing the dataset'restricted_stock
 with open("final_project_dataset.pkl", "r") as data_file:
     data_dict = pickle.load(data_file)
@@ -75,7 +75,7 @@ for key in data_dict:
         if feature != "poi":
             total = total + data_dict[key][feature]
 
-    print 'poi, %s, key, %s, total, %f'%(data_dict[key]['poi'],key,total)
+    #print 'poi, %s, key, %s, total, %f'%(data_dict[key]['poi'],key,total)
     if (data_dict[key]['to_messages'] == 0 and data_dict[key]['from_messages'] == 0):
         poi_mail_ratio =0
     else:
@@ -92,6 +92,8 @@ for key in data_dict:
 
     data_dict[key]['poi_to_mail_ratio'] = poi_to_mail_ratio
     data_dict[key]['poi_from_mail_ratio'] = poi_from_mail_ratio
+    print 'poi, %s, key, %s, total, %f stock, %f, to, %f, from, %f'%(data_dict[key]['poi'],key,data_dict[key]['total_payments'],data_dict[key]['total_stock_value'],poi_to_mail_ratio,poi_from_mail_ratio)
+
 
 
 features_list.append('poi_to_mail_ratio')

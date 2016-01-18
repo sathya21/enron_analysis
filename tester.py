@@ -48,7 +48,7 @@ def test_classifier(clf, dataset, feature_list, folds = 1000):
         ### fit the classifier using training set, and test on test set
 
 
-        features_new = SelectKBest(f_classif,k=7)
+        features_new = SelectKBest(f_classif,k=4  )
         fit_transform=features_new.fit_transform(features_train,labels_train)
         clf.fit(fit_transform, labels_train)
         test_transform=features_new.fit_transform(features_test,labels_test)
