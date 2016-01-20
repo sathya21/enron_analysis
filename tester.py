@@ -16,6 +16,8 @@ from sklearn.cross_validation import StratifiedShuffleSplit
 sys.path.append("../tools/")
 from feature_format import featureFormat, targetFeatureSplit
 from sklearn.feature_selection import SelectKBest
+from sklearn.feature_selection import SelectPercentile
+
 from sklearn.feature_selection import f_classif
 import numpy as np
 
@@ -34,6 +36,7 @@ def test_classifier(clf, dataset, feature_list, folds = 1000):
     true_positives = 0
     false_positives = 0
     for train_idx, test_idx in cv:
+        print 'train_idx %d test_idx %d'%(len(train_idx),len(test_idx))
         features_train = []
         features_test  = []
         labels_train   = []
@@ -48,10 +51,12 @@ def test_classifier(clf, dataset, feature_list, folds = 1000):
         ### fit the classifier using training set, and test on test set
 
 
-        features_new = SelectKBest(f_classif,k=4  )
+        features_new = SelectKBest(f_classif,k='all')
+        #features_new = SelectPercentile(f_classif, percentile=100)
         fit_transform=features_new.fit_transform(features_train,labels_train)
         clf.fit(fit_transform, labels_train)
         test_transform=features_new.fit_transform(features_test,labels_test)
+
         predictions = clf.predict(test_transform)
 
         #clf.fit(features_train, labels_train)
@@ -78,7 +83,7 @@ def test_classifier(clf, dataset, feature_list, folds = 1000):
                 recall = 1.0*true_positives/(true_positives+false_negatives)
                 f1 = 2.0 * true_positives/(2*true_positives + false_positives+false_negatives)
                 f2 = (1+2.0*2.0) * precision*recall/(4*precision + recall)
-                if precision > 0.25 and recall > 0.25:
+                if precision > 0.0 and recall > 0.0:
                     print clf
                     print clf.best_params_
 
@@ -97,10 +102,9 @@ def test_classifier(clf, dataset, feature_list, folds = 1000):
         recall = 1.0*true_positives/(true_positives+false_negatives)
         f1 = 2.0 * true_positives/(2*true_positives + false_positives+false_negatives)
         f2 = (1+2.0*2.0) * precision*recall/(4*precision + recall)
-        print clf
-        print clf.best_params_
-        print clf.best_estimator_
-        print clf.scorer_
+        print "Feature importance %s"%clf.best_estimator_.feature_importances_
+        print "Best Params %s"%clf.best_params_
+
 
 
         print PERF_FORMAT_STRING.format(accuracy, precision, recall, f1, f2, display_precision = 5)
